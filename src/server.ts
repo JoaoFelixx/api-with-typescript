@@ -1,3 +1,3 @@
 import App from './app'
 
-App.listen(3000, () => console.log('hi'))
+App.listen(3000, () => console.log('server on'))

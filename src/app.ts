@@ -24,7 +24,7 @@ class Application implements AppInterface {
   async database(): Promise<void> {
     mongoose.Promise = global.Promise;
     await mongoose
-      .connect("mongodb://localhost:27017/secretProjet", {
+      .connect("mongodb://localhost:27017/patterns", {
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true,

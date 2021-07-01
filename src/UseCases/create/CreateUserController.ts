@@ -1,27 +1,18 @@
-import { Request, Response } from 'express'
-import { CreateUser } from './CreateUser';
-
+import { Request, Response } from "express";
+import { CreateUser } from "./CreateUser";
+import validator from "../../services/validator/Validator";
+import { User } from "../../entities/User";
 
 export class CreateUserController {
-
-  constructor(
-    private createUser: CreateUser
-  ) {}
+  constructor(private createUser: CreateUser) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
-    const { name, email, password } = request.body
-    
-    try {
-      await this.createUser.execute({
-        name,
-        email,
-        password
-      })
+    const user: User = request.body;
 
-      return response.sendStatus(201)
+    if (!validator.userValidate(user)) return response.sendStatus(400);
 
-    } catch(err) {
-      return response.sendStatus(400)
-    } 
+    await this.createUser.execute(user);
+
+    return response.sendStatus(201);
   }
 }

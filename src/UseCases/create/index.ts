@@ -1,11 +1,11 @@
-import { PostgresUsersRepository } from "../../repositories/implementations/PostGresUsersRepository";
+import { MongoUsersRepository } from "../../repositories/implementations/MongoUsersRepository";
 import { CreateUser } from "./CreateUser";
 import { CreateUserController } from "./CreateUserController";
 
-const postgress = new PostgresUsersRepository() 
+const mongo = new MongoUsersRepository() 
 
 const createUser = new CreateUser(
-  postgress
+  mongo
 )
 
 const createUserCOntroller = new CreateUserController(
