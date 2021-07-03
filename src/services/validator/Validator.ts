@@ -1,5 +1,6 @@
 import { ValidatorInterface } from "./ValidatorInterface";
 import { User } from "../../entities/User";
+import { DeleteUserDTO } from "../../UseCases/delete/DeleteUserDTO";
 
 class Validator implements ValidatorInterface {
   
@@ -16,6 +17,11 @@ class Validator implements ValidatorInterface {
     
     return error.length > 0 ? false : true;
   }
+
+  valideIdAndPassword(user: DeleteUserDTO) {
+    return true
+  }
+
 }
 
 export default new Validator()

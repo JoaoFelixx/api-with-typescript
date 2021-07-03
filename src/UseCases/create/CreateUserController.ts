@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import { CreateUser } from "./CreateUser";
-import validator from "../../services/validator/Validator";
+import Validator from "../../services/validator/Validator";
 import { User } from "../../entities/User";
 
 export class CreateUserController {
-  constructor(private createUser: CreateUser) {}
+  constructor(
+    private createUser: CreateUser
+  ) {}
 
   async handle(request: Request, response: Response): Promise<Response> {
     const user: User = request.body;
 
-    if (!validator.userValidate(user)) return response.sendStatus(400);
+    if (!Validator.userValidate(user)) return response.sendStatus(400);
 
     await this.createUser.execute(user);
 

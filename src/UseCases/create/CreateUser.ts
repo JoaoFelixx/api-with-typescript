@@ -1,11 +1,11 @@
 import { User } from "../../entities/User";
 // import { SendEmailInterface } from "../../providers/SendEmailInterface";
-import { UserInterfaceRepo } from "../../repositories/UserInterfaceRepo";
+import { UserCreateInterfaceRepository } from "../../repositories/UserInterfaceRepo";
 import { createUserInterfaceDTO } from "./CreateUserDTO";
 
 export class CreateUser {
   constructor(
-    private usersRepository: UserInterfaceRepo
+    private usersRepository: UserCreateInterfaceRepository
   ) // private mailProvider: SendEmailInterface
   {}
 
