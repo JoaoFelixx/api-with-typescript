@@ -1,3 +1,5 @@
 import App from './app'
 
-App.listen(3000, () => console.log('server on'))
+const PORT = 3000 
+
+App.listen(PORT, () => console.log(`server running at http://localhost:${PORT}`))

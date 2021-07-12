@@ -1,13 +1,12 @@
-import { UserDeleteInterfaceRepository } from "../../repositories/UserInterfaceRepo";
+import userRepositoryFile from "../../repositories/UserRepositoryFile";
 
-export class DeleteUser {
-  constructor(
-    private userRepository: UserDeleteInterfaceRepository
-  ) {}
+class DeleteUser {
 
-  async exclude(id: string, password: string) {
-    await this.userRepository.delete(id, password)
-      .then(() =>  { return true  })
-      .catch(() => { return false });
+  async exclude(id?: string) {
+    await userRepositoryFile.find(id)
+      .then(async () => { return await userRepositoryFile.delete(id) })
+      .catch((err) => { throw new Error() })
   }
 }
+
+export default new DeleteUser()

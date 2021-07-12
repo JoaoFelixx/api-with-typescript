@@ -1,20 +1,14 @@
 import { Request, Response } from 'express'
-import { DeleteUser } from './DeleteUser'
-import Validator from '../../services/validator/Validator'
-import { DeleteUserDTO } from './DeleteUserDTO';
-
+import deleteUser from './DeleteUser'
 
 export class DeleteUserController {
-  constructor(
-    private deleteUser: DeleteUser
-  ){}
 
-  async handle(request: Request, response: Response): Promise<Response> {
-    const user: DeleteUserDTO = request.body;
+  async handle(request: Request, response: Response): Promise<void> {
     
-    if (Validator.valideIdAndPassword(user))
-      return response.sendStatus(400)
-    
-    return response.sendStatus(200)
+    await deleteUser.exclude(request.params.user_id)
+      .then(() => { return response.sendStatus(202) })
+      .catch((err) => { return response.status(404).json({error: "User not a found" }) })
   }
 }
+
+export default new DeleteUserController()

@@ -1,17 +1,22 @@
+import { v4 } from 'uuid';
 import { User } from "../../entities/User";
-// import { SendEmailInterface } from "../../providers/SendEmailInterface";
-import { UserCreateInterfaceRepository } from "../../repositories/UserInterfaceRepo";
-import { createUserInterfaceDTO } from "./CreateUserDTO";
+import createHash from '../../services/createHash'
+import userRepositoryFile from '../../repositories/UserRepositoryFile';
 
-export class CreateUser {
-  constructor(
-    private usersRepository: UserCreateInterfaceRepository
-  ) // private mailProvider: SendEmailInterface
-  {}
+class CreateUser {
 
-  async execute(data: createUserInterfaceDTO) {
-    const user = new User(data);
+  async execute(email: string, password: string) {
+    const id = await v4() 
+    const hashPassowrd = await createHash(password)
 
-    await this.usersRepository.save(user);
+    const user: User = {
+      _id: id,
+      email: email.toLocaleLowerCase(),
+      password: hashPassowrd.toString()
+    }
+
+    return await userRepositoryFile.save(user)
   }
 }
+
+export default new CreateUser()

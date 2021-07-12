@@ -1,15 +1,10 @@
-import { v4 } from 'uuid'
+export interface UserCreate {
+  _id: string;
+  email: string;
+  password: string;
+}
 
-export class User {
-  public readonly id?: string;
-
-  public name: string;
-  public email: string;
-  public password: string; 
-  
-  constructor (props: Omit<User,'id'>, id?: string ) {
-    Object.assign(this, props)
-
-    !id ? this.id = v4() : true
-  }
+export interface UserUpdate {
+  email: string;
+  password: string;
 }

@@ -1,10 +1,8 @@
 import { User } from "../entities/User";
 
-export interface UserCreateInterfaceRepository {
-  find(id?: string)
-  save(user: User)
+export interface UserInterfaceRepository {
+  find(id?: string): Promise<void>
+  save(user: User): Promise<void>
+  delete(id: string): Promise<void>
+  update(id:string, user: User): Promise<void>
 }  
-
-export interface UserDeleteInterfaceRepository {
-  delete(id: string, password: string): Promise<void>
-}
