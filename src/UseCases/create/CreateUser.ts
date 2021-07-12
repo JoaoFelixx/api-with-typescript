@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { User } from "../../entities/User";
+import { UserCreate } from "../../entities/User";
 import createHash from '../../services/createHash'
 import userRepositoryFile from '../../repositories/UserRepositoryFile';
 
@@ -9,7 +9,7 @@ class CreateUser {
     const id = await v4() 
     const hashPassowrd = await createHash(password)
 
-    const user: User = {
+    const user: UserCreate = {
       _id: id,
       email: email.toLocaleLowerCase(),
       password: hashPassowrd.toString()
