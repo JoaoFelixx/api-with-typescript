@@ -1,13 +1,10 @@
-import userRepositoryFile from "../../repositories/UserRepositoryFile"
-class FindUser {
+import userRepositoryFile from "../../repositories/UserRepositoryFile";
 
-  async find(id?: string) {
-    const users = await userRepositoryFile.find(id)
+export async function findUser(id?: string) {
 
-    if (!users) throw new Error()
+    const users = await userRepositoryFile.find(id);
 
-    return users
-  }
+    if (!users) throw new Error();
+
+    return users;
 }
-
-export default new FindUser()

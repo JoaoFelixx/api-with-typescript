@@ -1,22 +1,20 @@
-import validator from "../../services/Validator";
+import { userIsValid } from "../../services/Validator";
 import { Request, Response } from "express";
-import updateUser from "./UpdateUser";
+import { updateUser } from "./UpdateUser";
 
-class UpdateUserController {
-  async handle(request: Request, response: Response) {
-    if (!request.body.email || !request.body.password || !request.params.user_id)
-      return response.sendStatus(400);
+export async function updateUserController(request: Request, response: Response) {
 
-    const { email, password } = request.body;
+  if (!request.body.email || !request.body.password || !request.params.user_id)
+    return response.sendStatus(400);
 
-    validator.userValidate(email, password)
-      .then(async () => {
-        await updateUser.edit(request.params.user_id, email, password)
-          .then(() => { return response.sendStatus(202) })
-          .catch((err) => { return response.status(404).json({error: "User not a found"}) })
+  const { email, password } = request.body;
+
+  userIsValid(email, password)
+    .then(async () => {
+
+      await updateUser(request.params.user_id, email, password)
+        .then(() => { return response.sendStatus(202) })
+        .catch(() => { return response.status(404).json({error: "User not a found"}) });
       })
-      .catch((messages) => { return response.status(400).json(messages) })
-  }
+      .catch((messages) => { return response.status(400).json(messages) });
 }
-
-export default new UpdateUserController()

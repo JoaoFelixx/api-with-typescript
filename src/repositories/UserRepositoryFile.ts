@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { readFile, writeFile } from 'fs/promises';
+import { join } from 'path';
 import { UserInterfaceRepository } from "./UserInterfaceRepo";
 import { UserCreate, UserUpdate } from "../entities/User";
 
@@ -8,11 +8,11 @@ export class UserRepositoryFile implements UserInterfaceRepository {
   readonly file: string = join(__dirname, '..', '..', 'database', 'data.json');
 
   async __currentFileContent() {
-    return await readFile(this.file, 'utf8')
+    return await readFile(this.file, 'utf8');
   }
 
-  async __recordAtFile(currentFile?: string | Array<undefined>) {
-    return await writeFile(this.file, JSON.stringify(currentFile), 'utf8')
+  async __recordAtFile(currentFile?: Array<string> | Array<undefined>) {
+    return await writeFile(this.file, JSON.stringify(currentFile), 'utf8');
   }
 
   async find(id?: string) {
@@ -51,4 +51,4 @@ export class UserRepositoryFile implements UserInterfaceRepository {
   }
 }
 
-export default new UserRepositoryFile()
+export default new UserRepositoryFile();
