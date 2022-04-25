@@ -1,54 +1,61 @@
-import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { UserInterfaceRepository } from "./UserInterfaceRepo";
-import { UserCreate, UserUpdate } from "../entities/User";
+import { readFile, writeFile } from 'fs/promises';
+import { UserRegistered } from "../interfaces";
 
-export class UserRepositoryFile implements UserInterfaceRepository {
-  
+class UserRepository {
+
   readonly file: string = join(__dirname, '..', '..', 'database', 'data.json');
 
-  async __currentFileContent() {
-    return await readFile(this.file, 'utf8');
+  private async __currentFileContent(): Promise<UserRegistered[]> {
+    return JSON.parse(await readFile(this.file, 'utf8'));
   }
 
-  async __recordAtFile(currentFile?: Array<string> | Array<undefined>) {
-    return await writeFile(this.file, JSON.stringify(currentFile), 'utf8');
+  private async __recordAtFile(currentFile?: UserRegistered[] | Array<undefined>): Promise<void> {
+    await writeFile(this.file, JSON.stringify(currentFile), 'utf8');
   }
 
-  async find(id?: string) {
-    const allUsers = JSON.parse(await this.__currentFileContent());
+  async find(id?: string): Promise<UserRegistered | UserRegistered[]> {
+    const allUsers = await this.__currentFileContent();
 
-    return !id ? allUsers : allUsers.find(({ _id }) => id === _id);  
+    return id ? allUsers.find(({ _id }) => id === _id) : allUsers;
   }
 
-  async save(user: UserCreate) {
-    const currentFile = JSON.parse(await this.__currentFileContent());
-    
-    if (currentFile.find((({ email }) => email === user.email))) throw new Error(); // if email exists return statusCode(400) saying email exists 
-    
-    currentFile.push(user); // add user
+  async save(user: UserRegistered): Promise<void | Error> {
+    const currentFile = await this.__currentFileContent();
+    const emailIsAlreadyRegistered = await currentFile.find((({ email }) => email === user.email));
 
-   return await this.__recordAtFile(currentFile);
+    if (emailIsAlreadyRegistered)
+      return new Error('Email is already registered');
+
+    currentFile.push(user);
+
+    await this.__recordAtFile(currentFile);
   }
 
-  async update(itemID: string,user: UserUpdate) {
-    const allUsers = JSON.parse(await this.__currentFileContent());
-    const newUser = allUsers.find(({ _id }) => itemID === _id);
+  async update(user: UserRegistered): Promise<void | Error> {
+    const allUsers = await this.__currentFileContent();
 
-    newUser.email = user.email;
-    newUser.password = user.password;
+    const registeredUser = await allUsers.find(({ _id }) => user._id === _id);
+
+    if (!registeredUser)
+      return new Error('User does not exists');
+
+    registeredUser.email = user.email;
+    registeredUser.password = user.password;
+    registeredUser.updatedAt = new Date(); 
 
     await this.__recordAtFile(allUsers);
   }
 
-  async delete(id?: string) {
+  async delete(id?: string): Promise<void> {
     if (!id) return await this.__recordAtFile([]);
 
-    const usersSaved = JSON.parse(await this.__currentFileContent()) 
-      .filter(({ _id }) => id != _id);
-    
-    return await this.__recordAtFile(usersSaved);
+    const users = await this.__currentFileContent();
+
+    const usersSaved = users.filter(({ _id }) => id != _id);
+
+    await this.__recordAtFile(usersSaved);
   }
 }
 
-export default new UserRepositoryFile();
+export default UserRepository;
