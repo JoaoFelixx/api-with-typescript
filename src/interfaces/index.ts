@@ -6,6 +6,9 @@ interface UserRegistered {
   updatedAt?: Date;
 }
 
+type UserStarting = Omit<UserRegistered, '_id' | 'createdAt' | 'updatedAt'>
+
 export {
   UserRegistered,
+  UserStarting,
 }

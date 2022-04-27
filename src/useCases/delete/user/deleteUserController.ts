@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import deleteUser from './deleteUser';
+import { deleteUser } from './deleteUser';
 
-async function deleteUserController(request: Request, response: Response) {
+export async function deleteUserController(request: Request, response: Response) {
   try {
     await deleteUser(request.params.user_id)
 
@@ -11,5 +11,3 @@ async function deleteUserController(request: Request, response: Response) {
     return response.status(404).json("User not a found");
   }
 }
-
-export default deleteUserController;

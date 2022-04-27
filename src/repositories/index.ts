@@ -1,7 +1,5 @@
-import UserRepository from "./UserRepositoryFile";
+import { UserRepository } from "./UserRepository";
 
 const userRepository = new UserRepository();
 
-export {
-  userRepository,
-}
+export { userRepository }

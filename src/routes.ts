@@ -1,19 +1,23 @@
 import { Router } from 'express';
+import { middlewareJwt } from './middleware';
 import { 
-  findUserController,
+  authUserController,
   createUserController,
   deleteUserController,
   updateUserController,
-} from './UseCases';
+} from './useCases';
 
 const routes = Router()
 
-routes.get('/api/v1/users/:user_id?',    findUserController);
+routes.post('/users', createUserController);
+routes.post('/auth', authUserController);
 
-routes.post('/api/v1/users',             createUserController);
- 
-routes.delete('/api/v1/users/:user_id?', deleteUserController);
+routes.use(middlewareJwt);
 
-routes.put('/api/v1/users/:user_id',     updateUserController);
+routes.get('/data/', (req, res) => res.status(200).json('OK'));
 
-export default routes;
+routes.put('/users/:user_id', updateUserController);
+
+routes.delete('/users/:user_id?', deleteUserController);
+
+export{ routes };

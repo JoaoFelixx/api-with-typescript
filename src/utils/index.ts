@@ -1,5 +1,3 @@
-import createHash from './createHash'
+import { userIsValid } from './userIsValid'
 
-export {
-  createHash,
-}
+export { userIsValid };

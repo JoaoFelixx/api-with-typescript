@@ -2,9 +2,16 @@ import { join } from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { UserRegistered } from "../interfaces";
 
-class UserRepository {
+interface Methods {
+  save(user: UserRegistered): Promise<UserRegistered | Error>
+  update(user: UserRegistered): Promise<UserRegistered | Error> 
+  delete(id?: string): Promise<void> 
+  auth(emailReceived: string): Promise<UserRegistered | null>
+}
 
-  readonly file: string = join(__dirname, '..', '..', 'database', 'data.json');
+export class UserRepository implements Methods {
+
+  private readonly file: string = join(__dirname, '..', '..', 'database', 'data.json');
 
   private async __currentFileContent(): Promise<UserRegistered[]> {
     return JSON.parse(await readFile(this.file, 'utf8'));
@@ -14,13 +21,15 @@ class UserRepository {
     await writeFile(this.file, JSON.stringify(currentFile), 'utf8');
   }
 
-  async find(id?: string): Promise<UserRegistered | UserRegistered[]> {
-    const allUsers = await this.__currentFileContent();
+  async auth(emailReceived: string): Promise<UserRegistered | null> {
+    const users = await this.__currentFileContent();
 
-    return id ? allUsers.find(({ _id }) => id === _id) : allUsers;
+    const user = await users.find(({ email }) => email === emailReceived);
+
+    return user;
   }
 
-  async save(user: UserRegistered): Promise<void | Error> {
+  async save(user: UserRegistered): Promise<UserRegistered | Error> {
     const currentFile = await this.__currentFileContent();
     const emailIsAlreadyRegistered = await currentFile.find((({ email }) => email === user.email));
 
@@ -30,9 +39,11 @@ class UserRepository {
     currentFile.push(user);
 
     await this.__recordAtFile(currentFile);
+
+    return user
   }
 
-  async update(user: UserRegistered): Promise<void | Error> {
+  async update(user: UserRegistered): Promise<UserRegistered | Error> {
     const allUsers = await this.__currentFileContent();
 
     const registeredUser = await allUsers.find(({ _id }) => user._id === _id);
@@ -42,9 +53,11 @@ class UserRepository {
 
     registeredUser.email = user.email;
     registeredUser.password = user.password;
-    registeredUser.updatedAt = new Date(); 
+    registeredUser.updatedAt = new Date();
 
     await this.__recordAtFile(allUsers);
+
+    return registeredUser;
   }
 
   async delete(id?: string): Promise<void> {
@@ -57,5 +70,3 @@ class UserRepository {
     await this.__recordAtFile(usersSaved);
   }
 }
-
-export default UserRepository;

@@ -1,6 +1,7 @@
+import 'dotenv/config';
 import express from "express";
 import cors from 'cors';
-import routes from "./routes";
+import { routes } from "./routes";
 
 class Application {
 
@@ -14,7 +15,7 @@ class Application {
   }
 
   routes(): void {
-    this.express.use(routes);
+    this.express.use('/api/v1',routes);
   }
 
   middlewares(): void {
@@ -25,4 +26,4 @@ class Application {
 
 const { express: application } = new Application()
 
-export default application;
+export { application };

@@ -1,32 +1,22 @@
 import { randomUUID as uuid } from 'crypto';
-import { createHash } from '../utils';
+import bcrypt from 'bcryptjs';
 
-class User {
-  constructor(
-    public _id: string,
-    public email: string,
-    public password: string,
-    public createdAt?: Date,
-  ) {
-    this._id = this._id ? this._id : uuid();
+export class User {
+  public readonly _id: string;
+
+  public email: string;
+  public password: string;
+  public createdAt?: Date;
+
+  constructor(props: Omit<User, '_id'>, _id?: string) {
+    Object.assign(this, props);
+
     this.email.toLowerCase();
-    this.password = createHash(password);
+    this.password = bcrypt.hashSync(props.password, 8);
     this.createdAt = this.createdAt ? this.createdAt : new Date();
-  }
 
-  userIsValid(): Error | boolean {
-    const REGEX = /\S+@\S+\.\S+/;
-    const errors = [];
-
-    if (this.password.length < 4) errors.push("Password is very small");
-
-    if (!REGEX.test(this.email)) errors.push("Email is invalid");
-
-    if (errors.length > 0)
-      return new Error(errors.toString());
-
-    return true
+    if (!this._id) {
+      this._id = uuid()
+    }
   }
 }
-
-export default User;
